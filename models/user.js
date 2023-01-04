@@ -1,15 +1,14 @@
 const mongoose = require("mongoose")
+const bcrypt = require('bcryptjs');
 
 const Schema = mongoose.Schema
 
 const UserSchema = new Schema({
     firstname:  {
-        type: String,
-        required: true
+        type: String
     },
     lastname:  { 
-        type: String,
-        required: true
+        type: String
        
     },
     email:  {
@@ -20,6 +19,7 @@ const UserSchema = new Schema({
     password: {
         type: String,
         required: true
+        
     },
     
 })
@@ -28,19 +28,18 @@ const UserSchema = new Schema({
 // you will get the plain text password, hash it, and store it.
 UserSchema.pre(
     'save',
-    async function (next) {
+     function (next) {
         const user = this;
-        const hash = await bcrypt.hash(this.password, 10);
+        const hash =  bcrypt.hashSync(this.password, 10);
 
         this.password = hash;
         next();
     }
 );
-
-// makes sure user trying to log in is valid
-UserSchema.methods.isValidPassword = async function(password) {
+// // makes sure user trying to log in is valid
+UserSchema.methods.isValidPassword =  function(password) {
     const user = this;
-    const compare = await bcrypt.compare(password, user.password);
+    const compare =  bcrypt.compareSync(password, user.password);
   
     return compare;
   }

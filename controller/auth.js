@@ -3,6 +3,7 @@ const localStrategy = require('passport-local').Strategy
 
 const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt
+bcrypt = require("bcryptjs")
 
 const UserModel = require('../models/user');
 
@@ -11,6 +12,8 @@ passport.use(
         {
             secretOrKey: process.env.JWT_SECRET,
             jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken() // Use this if you are using Bearer token
+            //passReqToCallBack: true
+
         },
         async (token, done) => {
             try {
@@ -26,18 +29,18 @@ passport.use(
     'signup',
     new localStrategy(
         {
-            firstnameField:'firstname',
-            lastnameField: 'lastname',
+    
             usernameField: 'email',
-            passwordField: 'password'
+            passwordField: 'password',
+            passReqToCallBack: true
         },
-        async (firstname,lastname,email, password, done) => {
+        async (email, password, done) => {
             try {
-                const user = await UserModel.create({firstname, lastname,email, password });
+                const user = await UserModel.create({email, password });
 
                 return done(null, user);
             } catch (error) {
-                done(error);
+                console.log(error);
             }
         }
     )
@@ -50,20 +53,21 @@ passport.use(
         {
             usernameField: 'email',
             passwordField: 'password'
+           //passReqToCallBack: true
         },
         async (email, password, done) => {
             try {
                 const user = await UserModel.findOne({ email });
-
                 if (!user) {
                     return done(null, false, { message: 'User not found' });
                 }
+              
+                
+                 const validate = await user.isValidPassword(password);
 
-                const validate = await user.isValidPassword(password);
-
-                if (!validate) {
-                    return done(null, false, { message: 'Wrong Password' });
-                }
+                 if (!validate) {
+                     return done(null, false, { message: 'Wrong Password' });
+                 }
 
                 return done(null, user, { message: 'Logged in Successfully' });
             } catch (error) {
@@ -72,3 +76,7 @@ passport.use(
         }
     )
 );
+
+
+
+
