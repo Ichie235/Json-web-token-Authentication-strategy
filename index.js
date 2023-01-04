@@ -14,6 +14,7 @@ const app = express()
 
 db.connectToDatabase()
 
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.listen(PORT,()=>{
     console.log(`server is listening at http://localhost:${PORT}`)

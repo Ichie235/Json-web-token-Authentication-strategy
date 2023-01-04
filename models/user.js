@@ -23,3 +23,29 @@ const UserSchema = new Schema({
     },
     
 })
+
+// Before the user information is saved in the database, this function will be called,
+// you will get the plain text password, hash it, and store it.
+UserSchema.pre(
+    'save',
+    async function (next) {
+        const user = this;
+        const hash = await bcrypt.hash(this.password, 10);
+
+        this.password = hash;
+        next();
+    }
+);
+
+// makes sure user trying to log in is valid
+UserSchema.methods.isValidPassword = async function(password) {
+    const user = this;
+    const compare = await bcrypt.compare(password, user.password);
+  
+    return compare;
+  }
+
+
+const UserModel = mongoose.model('users', UserSchema);
+
+module.exports = UserModel;
