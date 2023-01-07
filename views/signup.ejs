@@ -1,0 +1,44 @@
+<!-- HEADER -->
+<%- include('layouts/navbar') %>
+<body>
+    <main class="signup-container">
+        <section class="sub-container1">
+            <div class="sub-child">
+            <h2 class="signin-heading">Welcome Back!</h2>
+            <p class="signin-text">To keep connected with us please <br> login with your personal info</p>
+            <button class="signin-btn"><a href="/login" style="color: #FFFF;text-decoration:none;" > SIGN IN</a></button>
+        </div>
+
+        </section>
+        <section class="sub-container2">
+            <div class="register">
+            <h2 style="color: #84FF84; font-size:33px;text-align:center;">Create Account</h2>
+           <form action="auth/signup" method="post" class="form-container">
+            <div class="form-child">
+                <label for="firstname">First-name</label><br>
+                <input type="firstname" name="firstname" id="firstname" placeholder="Enter firstname" class="input-field">
+                <i class="fa-solid fa-envelope envelope2"></i>
+            </div>
+            <div class="form-child">
+                <label for="lastname">Last-name</label><br>
+                <input type="lastname" name="lastname" id="lastname" placeholder="Enter lastname" class="input-field">
+                <i class="fa-solid fa-envelope envelope2"></i>
+            </div>
+            <div class="form-child">
+            <label for="username">User-name</label><br>
+            <input type="email" name="email" id="email" placeholder="Enter user-name or email" class="input-field">
+            <i class="fa-solid fa-envelope envelope2"></i>
+        </div>
+        <div class="form-child">
+            <label for="password">password</label><br>
+            <input type="password" name="password" id="password" placeholder="Enter password" class="input-field">
+            <i class="fa-solid fa-envelope envelope2"></i>
+        </div>
+           
+              <button type="submit" class="signup-btn">SIGN UP</button>
+           </form>
+          
+        </div>
+    </section>
+    </main>
+</body>

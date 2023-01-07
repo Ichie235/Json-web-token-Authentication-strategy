@@ -9,10 +9,7 @@ const authRouter = express.Router();
 authRouter.post(
     '/signup',
     passport.authenticate('signup', { session: false }), async (req, res, next) => {
-        res.json({
-            message: 'Signup successful',
-            user: req.user
-        });
+        res.redirect('/login')
     } 
 )
 
@@ -20,6 +17,7 @@ authRouter.post(
 authRouter.post(
     '/login',
     async (req, res, next) => {
+        
         passport.authenticate('login', async (err, user, info) => {
             try {
                 if (err) {
@@ -38,10 +36,16 @@ authRouter.post(
 
                         //ADD EXPIRATION TIME, ONCE EXCEEDED, REFRESH TOKEN IS REQUIRED
                         const token = jwt.sign({ user: body }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-                        return res.json({ token });
+                        console.log(token)
+                        res.status(200)
+                           .cookie('myToken',token,{maxAge:3600000,
+                            path:'/welcome',
+                            //secure:true
+                        })
+                           .render('booksTitle')
                     }
                 );
+
             } catch (error) {
                 return next(error);
             }

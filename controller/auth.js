@@ -7,12 +7,22 @@ bcrypt = require("bcryptjs")
 
 const UserModel = require('../models/user');
 
+
+
 passport.use(
+    
     new JWTstrategy(
         {
             secretOrKey: process.env.JWT_SECRET,
-            jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken() // Use this if you are using Bearer token
-            //passReqToCallBack: true
+            jwtFromRequest: ExtractJWT.fromExtractors([(req) => {
+                let tokenData = null;
+                if (req && req.cookies) {
+                    tokenData = req.cookies.myToken;
+                }
+                return tokenData;
+              }])
+           
+          
 
         },
         async (token, done) => {
@@ -22,6 +32,7 @@ passport.use(
                 done(error);
             }
         }
+    
     )
 );
 
@@ -34,11 +45,12 @@ passport.use(
             passwordField: 'password',
             passReqToCallBack: true
         },
-        async (email, password, done) => {
+        async (email, password, done,) => {
             try {
                 const user = await UserModel.create({email, password });
 
                 return done(null, user);
+                
             } catch (error) {
                 console.log(error);
             }
@@ -53,7 +65,7 @@ passport.use(
         {
             usernameField: 'email',
             passwordField: 'password'
-           //passReqToCallBack: true
+           
         },
         async (email, password, done) => {
             try {
@@ -76,7 +88,4 @@ passport.use(
         }
     )
 );
-
-
-
 
